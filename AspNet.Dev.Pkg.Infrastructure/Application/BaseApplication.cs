@@ -55,7 +55,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         public virtual IQueryable<T> FindQuery(Expression<Func<T, bool>> exp)
         {
             var query = Repository.FindQuery(exp);
-            if (query == null || !query.Any()) return null;
             return query;
         }
 

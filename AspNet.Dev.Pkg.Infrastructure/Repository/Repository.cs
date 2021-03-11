@@ -142,7 +142,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
             {
                 var query = dbSet.Where(exp);
                 if (!query.Any())
-                    return null;
+                    return query;
                 return query.AsNoTracking().AsQueryable();
             }
             return dbSet.AsQueryable();
