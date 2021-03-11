@@ -67,9 +67,9 @@ namespace AspNet.Dev.Pkg.Demo
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNet.Dev.Pkg.Demo v1"));
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNet.Dev.Pkg.Demo v1"));
 
             // app.UseHttpsRedirection();
             app.UseRouting();
