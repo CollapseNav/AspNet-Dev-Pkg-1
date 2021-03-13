@@ -32,6 +32,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         Task<int> CountAsync(Expression<Func<T, bool>> exp = null);
         Task<int> CountAsync(IQueryable<T> exp = null);
         Task<int> SaveAsync();
+        int Save();
         Task<int> ExeSqlAsync(string sql);
         DbContext GetContext();
         DbSet<T> GetDbSet();

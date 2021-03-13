@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Application
 {
@@ -23,7 +24,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         protected readonly IDatabase _cache;
         protected readonly IMapper _mapper;
         protected IdentityUser<Guid> CurrentUser = null;
-
         public BaseApplication(IRepository<T> re)
         {
             Repository = re;
@@ -44,7 +44,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
 
         public void SetCurrentUser(IdentityUser<Guid> user)
         {
-
             if (CurrentUser == null)
             {
                 CurrentUser = user;
@@ -72,13 +71,16 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         {
             return await Repository.SaveAsync();
         }
+        public virtual int SaveChanges()
+        {
+            return Repository.Save();
+        }
 
         public virtual async Task<T> AddAsync(CreateT entity)
         {
             T model = _mapper.Map<T>(entity);
             model.Init();
             await Repository.AddAsync(model);
-            await SaveChangesAsync();
             return model;
         }
 
@@ -101,7 +103,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
             await Repository.DeleteByIDAsync(id);
         }
 
-        public virtual async Task<int> DeleteRangeAsync(Guid[] ids)
+        public virtual async Task<int> DeleteRangeAsync(ICollection<Guid> ids)
         {
             int num = await Repository.DeleteByIDsAsync(ids);
             return num;
@@ -111,5 +113,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         {
             await Repository.UpdateAsync(_mapper.Map(entity, await FindAsync(id)));
         }
+
+        public DbContext GetDbContext() => Repository.GetContext();
     }
 }

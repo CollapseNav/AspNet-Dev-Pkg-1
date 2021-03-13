@@ -14,38 +14,32 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Controller
 {
     [Route("api/[controller]")]
-    public class BaseController<T, CreateT> : ControllerBase where T : BaseEntity where CreateT : BaseCreate
+    public class BaseController<T, CreateT> : ControllerBase, IBaseController<T, CreateT> where T : IBaseEntity where CreateT : BaseCreate
     {
         protected readonly DbContext _context;
         protected readonly ILogger _log;
         protected IBaseApplication<T, CreateT> _base;
+        protected IdentityUser<Guid> CurrentUser = null;
         private readonly IMapper _mapper;
         public BaseController(ILogger<BaseController<T, CreateT>> logger, IBaseApplication<T, CreateT> app)
         {
             _log = logger;
             _base = app;
+            _context = _base.GetDbContext();
             var provider = ServiceGet.GetProvider();
-            if (provider != null)
+            _mapper = provider?.GetService<IMapper>();
+            IHttpContextAccessor httpContextAccessor = provider?.GetService<IHttpContextAccessor>();
+            HttpContext httpContext = httpContextAccessor?.HttpContext;
+            var user = httpContext?.User;
+            var userInfo = user?.Claims.FirstOrDefault(item => item.Type.ToLower() == "userInfo".ToLower());
+            if (userInfo != null)
             {
-                _mapper = provider.GetService<IMapper>();
-                IHttpContextAccessor httpContextAccessor = provider.GetService<IHttpContextAccessor>();
-                if (httpContextAccessor != null)
-                {
-                    HttpContext httpContext = httpContextAccessor.HttpContext;
-                    var user = httpContext.User;
-                    if (user != null)
-                    {
-                        var claimUserInfo = user.Claims.FirstOrDefault(item => item.Type.ToLower() == "userInfo".ToLower());
-                        if (claimUserInfo != null)
-                        {
-                            app.SetCurrentUser(JsonConvert.DeserializeObject<IdentityUser<Guid>>(claimUserInfo.Value));
-                        }
-                    }
-                }
+                app.SetCurrentUser(JsonConvert.DeserializeObject<IdentityUser<Guid>>(userInfo.Value));
             }
         }
 
@@ -94,7 +88,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
         /// 删除(多个 id)
         /// </summary>
         [HttpDelete]
-        public virtual async Task<int> DeleteRangeAsync(Guid[] id)
+        public virtual async Task<int> DeleteRangeAsync(ICollection<Guid> id)
         {
             return await _base.DeleteRangeAsync(id);
         }
@@ -115,6 +109,11 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
         public virtual async Task<int> AddRangeAsync(ICollection<CreateT> entitys)
         {
             return await _base.AddRangeAsync(entitys);
+        }
+
+        public void Dispose()
+        {
+            _base.SaveChanges();
         }
     }
 }

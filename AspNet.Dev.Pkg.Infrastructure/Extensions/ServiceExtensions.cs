@@ -30,16 +30,16 @@ namespace AspNet.Dev.Pkg.Infrastructure.Ext
             services.AddScoped(typeof(IBaseApplication<,>), typeof(BaseApplication<,>));
             services.AddScoped(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
             services.AddScoped(typeof(IQCrudApplication<,,>), typeof(QCrudApplication<,,>));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         public static void ConfigureCoreRepository<T>(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(T));
+            services.ConfigureCoreRepository(typeof(T));
         }
 
         public static void ConfigureCoreRepository(this IServiceCollection services, Type repo)
         {
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IRepository<>), repo);
         }
     }

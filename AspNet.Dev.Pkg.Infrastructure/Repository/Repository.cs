@@ -12,16 +12,11 @@ using Z.EntityFramework.Plus;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class, IBaseEntity, new()
+    public class Repository<T> : IRepository<T> where T : class, IBaseEntity
     {
         protected readonly DbContext _db;
-
         protected readonly DbSet<T> dbSet;
         protected IdentityUser<Guid> CurrentUser = null;
-
-        /// <summary>
-        /// 初始化上下文
-        /// </summary>
         public Repository(DbContext db)
         {
             _db = db;
@@ -175,7 +170,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
             int total = await CountAsync(exp);
             pageindex = pageindex > 0 ? pageindex : 1;
             var skipSize = pageSize * (pageindex - 1);
-            List<T> data = new();
+            List<T> data;
 
             if (isAsc)
             {
@@ -204,7 +199,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
             int total = await CountAsync(exp);
             if (page == null)
                 page = new PageRequest();
-            List<T> data = new();
+            List<T> data;
 
             if (isAsc)
             {
@@ -279,6 +274,13 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         public virtual async Task<int> SaveAsync()
         {
             return await _db.SaveChangesAsync();
+        }
+        /// <summary>
+        /// 保存修改
+        /// </summary>
+        public virtual int Save()
+        {
+            return _db.SaveChanges();
         }
         /// <summary>
         /// 运行sql语句

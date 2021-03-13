@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace AspNet.Dev.Pkg.Demo
@@ -47,6 +48,8 @@ namespace AspNet.Dev.Pkg.Demo
                     c.IncludeXmlComments(item.FullName, true);
                 }
             });
+
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -54,9 +57,11 @@ namespace AspNet.Dev.Pkg.Demo
                     policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
                 });
             });
-            services.ConfigureCoreScope();
+
             services.ConfigureCoreRepository(typeof(DemoRepository<>));
             services.AddAutoMapper(typeof(MappingProfile));
+            services.ConfigureCoreHttpContext();
+            services.ConfigureCoreScope();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,7 +78,10 @@ namespace AspNet.Dev.Pkg.Demo
 
             // app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
