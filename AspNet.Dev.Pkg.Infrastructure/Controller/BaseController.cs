@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AspNet.Dev.Pkg.Infrastructure.Dto;
-using AspNet.Dev.Pkg.Infrastructure.Entity;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using AspNet.Dev.Pkg.Infrastructure.Util;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Controller
 {
@@ -30,7 +28,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
         {
             _log = logger;
             _base = app;
-            _context = _base.GetDbContext();
             var provider = ServiceGet.GetProvider();
             _mapper = provider?.GetService<IMapper>();
             IHttpContextAccessor httpContextAccessor = provider?.GetService<IHttpContextAccessor>();
@@ -42,7 +39,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
                 app.SetCurrentUser(JsonConvert.DeserializeObject<IdentityUser<Guid>>(userInfo.Value));
             }
         }
-
         protected async Task<int> SaveChangesAsync()
         {
             return await _base.SaveChangesAsync();

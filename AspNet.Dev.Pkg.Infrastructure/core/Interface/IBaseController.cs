@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AspNet.Dev.Pkg.Infrastructure.Dto;
-using AspNet.Dev.Pkg.Infrastructure.Entity;
+using AspNet.Dev.Pkg.Infrastructure.Interceptor;
+using Autofac.Extras.DynamicProxy;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Interface
 {
-    public interface IBaseController<T, CreateT> : IDisposable where T : IBaseEntity where CreateT : BaseCreate
+    public interface IBaseController
+    {
+    }
+    public interface IBaseController<T, CreateT> : IBaseController, IDisposable where T : IBaseEntity where CreateT : BaseCreate
     {
         /// <summary>
         /// 获取全部

@@ -39,7 +39,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Ext
 
         public static void ConfigureCoreRepository(this IServiceCollection services, Type repo)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            // services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IRepository<>), repo);
         }
     }

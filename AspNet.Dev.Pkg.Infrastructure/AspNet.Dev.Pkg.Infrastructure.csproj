@@ -13,12 +13,16 @@
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22"/>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.4"/>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1"/>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="5.1.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4"/>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1"/>
     <PackageReference Include="AutoMapper" Version="10.1.1"/>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2"/>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2"/>
+    <PackageReference Include="AspectCore.Core" Version="2.2.0"/>
+    <PackageReference Include="Autofac" Version="6.1.0"/>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
+    <PackageReference Include="Castle.Core" Version="4.4.1"/>
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.0"/>
   </ItemGroup>
 </Project>

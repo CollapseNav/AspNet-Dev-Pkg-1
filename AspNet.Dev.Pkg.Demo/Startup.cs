@@ -1,19 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using AspNet.Dev.Pkg.Infrastructure.Ext;
-using Elong.BaseCore.Api;
+using AspNet.Dev.Pkg.Infrastructure.Util;
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -28,15 +23,25 @@ namespace AspNet.Dev.Pkg.Demo
 
         public IConfiguration Configuration { get; }
 
+        public void ConfigureDevelopmentContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType(typeof(DemoDbContext)).As(typeof(DbContext));
+            builder.RegisterModule(new BaseAutofacModule());
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<DemoDbContext>(options =>
             {
                 options.UseSqlite(Configuration.GetConnectionString("Default"));
             });
-            services.AddControllers();
+            services.AddControllers(
+                options =>
+            {
+                options.Filters.Add<ApiFilter>();
+            }
+            );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AspNet.Dev.Pkg.Demo", Version = "v1" });
@@ -57,11 +62,26 @@ namespace AspNet.Dev.Pkg.Demo
                     policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
                 });
             });
-
-            services.ConfigureCoreRepository(typeof(DemoRepository<>));
             services.AddAutoMapper(typeof(MappingProfile));
             services.ConfigureCoreHttpContext();
-            services.ConfigureCoreScope();
+
+            var authUrl = Configuration.GetSection("AuthUrl").Get<string>();
+            if (!string.IsNullOrEmpty(authUrl))
+            {
+                services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = authUrl;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+            }
+
+            // services.AddTransient(typeof(IRepository<>), typeof(IUnitOfWork));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +93,7 @@ namespace AspNet.Dev.Pkg.Demo
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseExceptionHandler(action => action.Use(ErrorHandler.ExceptionHandler));
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNet.Dev.Pkg.Demo v1"));
 

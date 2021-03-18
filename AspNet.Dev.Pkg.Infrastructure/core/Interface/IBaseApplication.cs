@@ -5,13 +5,18 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AspNet.Dev.Pkg.Infrastructure.Dto;
+using AspNet.Dev.Pkg.Infrastructure.Interceptor;
 using AspNet.Dev.Pkg.Infrastructure.Unit;
+using Autofac.Extras.DynamicProxy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Interface
 {
-    public interface IBaseApplication<T, CreateT> where T : IBaseEntity where CreateT : BaseCreate
+    public interface IBaseApplication
+    {
+    }
+    public interface IBaseApplication<T, CreateT> : IBaseApplication where T : IBaseEntity where CreateT : BaseCreate
     {
         IdentityUser<Guid> GetCurrentUser();
         void SetCurrentUser(IdentityUser<Guid> user);
