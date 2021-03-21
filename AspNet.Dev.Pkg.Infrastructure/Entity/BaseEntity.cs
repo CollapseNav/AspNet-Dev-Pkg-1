@@ -5,15 +5,23 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Entity
 {
-    public class BaseEntity : IBaseEntity
+    public class BaseEntity<TKey> : BaseEntity, IBaseEntity<TKey>
     {
         [Key]
-        public Guid? Id { get; set; }
+        public new virtual TKey Id { get; set; }
+        public new virtual TKey CreatorId { get; set; }
+        public new virtual TKey LastModifierId { get; set; }
+    }
+    public class BaseEntity : IBaseEntity<Guid?>
+    {
+        [Key]
+        public virtual Guid? Id { get; set; }
         public bool? IsDeleted { get; set; }
         public DateTime? CreationTime { get; set; }
-        public Guid? CreatorId { get; set; }
+        public virtual Guid? CreatorId { get; set; }
         public DateTime? LastModificationTime { get; set; }
-        public Guid? LastModifierId { get; set; }
+        public virtual Guid? LastModifierId { get; set; }
+
         public virtual void Init()
         {
             Id = Guid.NewGuid();
