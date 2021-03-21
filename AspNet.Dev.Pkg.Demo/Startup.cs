@@ -23,7 +23,7 @@ namespace AspNet.Dev.Pkg.Demo
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureDevelopmentContainer(ContainerBuilder builder)
+        public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterType(typeof(DemoDbContext)).As(typeof(DbContext));
             builder.RegisterModule(new BaseAutofacModule());
