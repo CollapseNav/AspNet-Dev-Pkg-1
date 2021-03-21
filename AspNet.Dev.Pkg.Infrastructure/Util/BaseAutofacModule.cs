@@ -1,12 +1,9 @@
 using AspNet.Dev.Pkg.Infrastructure.Application;
 using AspNet.Dev.Pkg.Infrastructure.Controller;
-using AspNet.Dev.Pkg.Infrastructure.Interceptor;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using AspNet.Dev.Pkg.Infrastructure.Repository;
-using AspNet.Dev.Pkg.Infrastructure.UnitOfWork;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Util
 {
