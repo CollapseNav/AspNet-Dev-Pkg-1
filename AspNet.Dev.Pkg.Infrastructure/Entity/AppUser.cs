@@ -50,7 +50,7 @@ namespace Elong.Ids.Models
         /// 最近一次登录的时间
         /// </summary>
         public DateTime? LastLoginTime { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime? CreationTime { get; set; }
         public Guid? CreatorId { get; set; }
         public DateTime? LastModificationTime { get; set; }

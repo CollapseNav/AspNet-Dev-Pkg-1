@@ -14,10 +14,10 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         void SetCurrentUser(IdentityUser<Guid> user);
         Task AddAsync(T entity);
         Task AddRangeAsync(ICollection<T> entityList);
-        Task DeleteAsync(T entity);
-        Task<int> DeleteAsync(Expression<Func<T, bool>> exp);
-        Task DeleteByIDAsync(Guid id);
-        Task<int> DeleteByIDsAsync(ICollection<Guid> id);
+        Task DeleteAsync(T entity, bool isTrue = false);
+        Task<int> DeleteAsync(Expression<Func<T, bool>> exp, bool isTrue = false);
+        Task DeleteByIDAsync(Guid id, bool isTrue = false);
+        Task<int> DeleteByIDsAsync(ICollection<Guid> id, bool isTrue = false);
         Task UpdateAsync(T entity);
         Task<int> UpdateAsync(Expression<Func<T, bool>> where, Expression<Func<T, T>> entity);
         Task<T> FindSingleAsync(Expression<Func<T, bool>> exp = null);

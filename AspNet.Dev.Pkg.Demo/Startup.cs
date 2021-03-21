@@ -79,9 +79,6 @@ namespace AspNet.Dev.Pkg.Demo
                     };
                 });
             }
-
-            // services.AddTransient(typeof(IRepository<>), typeof(IUnitOfWork));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

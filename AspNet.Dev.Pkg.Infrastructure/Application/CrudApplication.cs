@@ -40,5 +40,13 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
             .WhereIf(true, item => true)
             );
         }
+        public new virtual async Task<ICollection<T>> FindAllAsync(GetT input)
+        {
+            return await Repository.FindQuery(GetQuery(input)).ToListAsync();
+        }
+        public new virtual async Task<PageData<T>> FindPageAsync(GetT input, PageRequest page)
+        {
+            return await Repository.FindPageAsync(GetQuery(input), page);
+        }
     }
 }

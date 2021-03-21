@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using Z.EntityFramework.Plus;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class, IBaseEntity
+    public class Repository<T> : IRepository<T> where T : class, IBaseEntity, new()
     {
         protected readonly DbContext _db;
         protected readonly DbSet<T> dbSet;
@@ -54,7 +55,8 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// 删除数据
         /// </summary>
         /// <param name="entity">需要删除的数据</param>
-        public virtual async Task DeleteAsync(T entity)
+        /// <param name="isTrue">是否真删</param>
+        public virtual async Task DeleteAsync(T entity, bool isTrue = false)
         {
             entity.SoftDelete(CurrentUser);
             await UpdateAsync(entity);
@@ -64,16 +66,26 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// 有条件地删除数据
         /// </summary>
         /// <param name="exp">筛选条件</param>
-        public virtual async Task<int> DeleteAsync(Expression<Func<T, bool>> exp)
+        /// <param name="isTrue">是否真删</param>
+        public virtual async Task<int> DeleteAsync(Expression<Func<T, bool>> exp, bool isTrue = false)
         {
-            return await dbSet.Where(exp).DeleteAsync();
+            if (isTrue)
+            {
+                var entitys = await dbSet.Where(exp).ToListAsync();
+                dbSet.RemoveRange(entitys);
+                return entitys.Count;
+            }
+            if (CurrentUser == null)
+                return await UpdateAsync(exp, entity => new T { IsDeleted = true, LastModificationTime = DateTime.Now });
+            return await UpdateAsync(exp, entity => new T { IsDeleted = true, LastModificationTime = DateTime.Now, LastModifierId = CurrentUser.Id });
         }
 
         /// <summary>
         /// 根据id删除数据
         /// </summary>
         /// <param name="id">主键ID</param>
-        public virtual async Task DeleteByIDAsync(Guid id)
+        /// <param name="isTrue">是否真删</param>
+        public virtual async Task DeleteByIDAsync(Guid id, bool isTrue = false)
         {
             var entity = await FindByIDAsync(id);
             await DeleteAsync(entity);
@@ -82,11 +94,11 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// 根据id删除数据
         /// </summary>
         /// <param name="id">主键ID</param>
-        public virtual async Task<int> DeleteByIDsAsync(ICollection<Guid> id)
+        /// <param name="isTrue">是否真删</param>
+        public virtual async Task<int> DeleteByIDsAsync(ICollection<Guid> id, bool isTrue = false)
         {
-            foreach (var item in id)
-                await DeleteByIDAsync(item);
-            return id.Count;
+            Expression<Func<T, bool>> exp = item => id.Contains(item.Id.Value);
+            return await DeleteAsync(exp, isTrue);
         }
 
         /// <summary>

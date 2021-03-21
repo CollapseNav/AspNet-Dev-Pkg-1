@@ -16,7 +16,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
     {
         [Key]
         public virtual Guid? Id { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime? CreationTime { get; set; }
         public virtual Guid? CreatorId { get; set; }
         public DateTime? LastModificationTime { get; set; }
@@ -25,7 +25,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
         public virtual void Init()
         {
             Id = Guid.NewGuid();
-            IsDeleted ??= false;
             CreationTime = DateTime.Now;
             LastModificationTime = DateTime.Now;
         }
@@ -42,14 +41,14 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
         }
         public virtual void SoftDelete(IdentityUser<Guid> user = null)
         {
-            if (user == null)
+            if (user != null)
                 LastModifierId = user.Id;
             SoftDelete();
         }
 
         public virtual IBaseEntity Entity()
         {
-            if (IsDeleted ?? false) return null;
+            if (IsDeleted) return null;
             return this;
         }
         public virtual void Update()
@@ -59,7 +58,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
         public virtual void Update(IdentityUser<Guid> user = null)
         {
             if (user != null)
-                CreatorId = user.Id;
+                LastModifierId = user.Id;
             Update();
         }
     }

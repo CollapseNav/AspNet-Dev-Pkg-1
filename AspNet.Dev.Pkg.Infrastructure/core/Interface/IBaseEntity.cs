@@ -15,7 +15,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         Guid? Id { get; set; }
         Guid? CreatorId { get; set; }
         Guid? LastModifierId { get; set; }
-        bool? IsDeleted { get; set; }
+        bool IsDeleted { get; set; }
         DateTime? CreationTime { get; set; }
         DateTime? LastModificationTime { get; set; }
         void Init();
