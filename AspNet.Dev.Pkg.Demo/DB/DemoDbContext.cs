@@ -9,6 +9,7 @@ namespace AspNet.Dev.Pkg.Demo
     {
         public DbSet<Demo> Demos { get; set; }
         public DbSet<DemoAgain> DemoAgains { get; set; }
+        public DbSet<Test> Tests { get; set; }
 
         public DemoDbContext(DbContextOptions<DemoDbContext> options) : base(options)
         {

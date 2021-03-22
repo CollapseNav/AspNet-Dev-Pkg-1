@@ -18,14 +18,24 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             .As(typeof(IBaseApplication<,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
             builder.RegisterGeneric(typeof(CrudApplication<,,>))
             .As(typeof(ICrudApplication<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
-            builder.RegisterGeneric(typeof(QCrudApplication<,,>))
-            .As(typeof(IQCrudApplication<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+            builder.RegisterGeneric(typeof(QueryApplication<,,>))
+            .As(typeof(IQueryApplication<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
             builder.RegisterGeneric(typeof(BaseController<,>))
             .As(typeof(IBaseController<,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
             builder.RegisterGeneric(typeof(CrudController<,,>))
             .As(typeof(ICrudController<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
-            builder.RegisterGeneric(typeof(QCrudController<,,>))
-            .As(typeof(IQCrudController<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+            builder.RegisterGeneric(typeof(QueryController<,,>))
+            .As(typeof(IQueryController<,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+
+
+            builder.RegisterGeneric(typeof(CrudApplication<,,,>))
+            .As(typeof(ICrudApplication<,,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+            builder.RegisterGeneric(typeof(QueryApplication<,,,>))
+            .As(typeof(IQueryApplication<,,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+            builder.RegisterGeneric(typeof(CrudController<,,,>))
+            .As(typeof(ICrudController<,,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
+            builder.RegisterGeneric(typeof(QueryController<,,,>))
+            .As(typeof(IQueryController<,,,>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
         }
     }
 }

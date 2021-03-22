@@ -8,6 +8,8 @@ namespace AspNet.Dev.Pkg.Demo
         {
             CreateMap<Demo, DemoCreate>().ReverseMap();
             CreateMap<DemoAgain, DemoAgainCreate>().ReverseMap();
+            CreateMap<Test, TestCreate>().ReverseMap();
+            CreateMap<Test, TestReturn>().ReverseMap();
         }
     }
 }

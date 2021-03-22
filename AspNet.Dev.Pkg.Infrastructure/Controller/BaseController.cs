@@ -11,45 +11,37 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Controller
 {
-    [Route("api/[controller]")]
-    public class BaseController<T, CreateT> : ControllerBase, IBaseController<T, CreateT> where T : IBaseEntity where CreateT : BaseCreate
+    [Route("[controller]")]
+    public class BaseController : ControllerBase
     {
         protected readonly DbContext _context;
-        protected readonly ILogger _log;
-        protected IBaseApplication<T, CreateT> _base;
         protected IdentityUser<Guid> CurrentUser = null;
+        protected HttpContext _httpContext = null;
         private readonly IMapper _mapper;
-        public BaseController(ILogger<BaseController<T, CreateT>> logger, IBaseApplication<T, CreateT> app)
+        public BaseController()
         {
-            _log = logger;
-            _base = app;
             var provider = ServiceGet.GetProvider();
             _mapper = provider?.GetService<IMapper>();
             IHttpContextAccessor httpContextAccessor = provider?.GetService<IHttpContextAccessor>();
-            HttpContext httpContext = httpContextAccessor?.HttpContext;
-            var user = httpContext?.User;
+            _httpContext = httpContextAccessor?.HttpContext;
+            var user = _httpContext?.User;
             var userInfo = user?.Claims.FirstOrDefault(item => item.Type.ToLower() == "userInfo".ToLower());
-            if (userInfo != null)
-            {
-                app.SetCurrentUser(JsonConvert.DeserializeObject<IdentityUser<Guid>>(userInfo.Value));
-            }
+        }
+    }
+    [Route("api/[controller]")]
+    public class BaseController<T, CreateT> : BaseController, IBaseController<T, CreateT> where T : IBaseEntity where CreateT : BaseCreate
+    {
+        protected IBaseApplication<T, CreateT> _base;
+        public BaseController(IBaseApplication<T, CreateT> app)
+        {
+            _base = app;
         }
         protected async Task<int> SaveChangesAsync()
         {
             return await _base.SaveChangesAsync();
-        }
-        /// <summary>
-        /// 获取全部
-        /// </summary>
-        [HttpGet, Route("All")]
-        public virtual async Task<ICollection<T>> FindAllAsync()
-        {
-            return await _base.FindAllAsync(null);
         }
 
         /// <summary>

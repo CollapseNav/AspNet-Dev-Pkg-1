@@ -6,10 +6,10 @@ using AspNet.Dev.Pkg.Infrastructure.Unit;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Interface
 {
-    public interface ICrudApplication<T, Return, GetT, CreateT> : IBaseApplication<T, Return, CreateT>
+    public interface IQueryApplication<T, Return, GetT, CreateT> : IBaseApplication<T, Return, CreateT>
     where T : IBaseEntity
     where Return : BaseReturn
-    where GetT : IBaseGet
+    where GetT : IBaseGet<T>
     where CreateT : BaseCreate
     {
         IQueryable<T> GetQuery(GetT input);
@@ -17,11 +17,9 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         Task<PageData<Return>> FindPageAsync(GetT input, PageRequest page);
     }
 
-
-
-    public interface ICrudApplication<T, GetT, CreateT> : IBaseApplication<T, CreateT>
+    public interface IQueryApplication<T, GetT, CreateT> : IBaseApplication<T, CreateT>
     where T : IBaseEntity
-    where GetT : IBaseGet
+    where GetT : IBaseGet<T>
     where CreateT : BaseCreate
     {
         IQueryable<T> GetQuery(GetT input);

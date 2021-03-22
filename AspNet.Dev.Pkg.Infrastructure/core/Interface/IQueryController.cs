@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Interface
 {
-    public interface ICrudController<T, Return, GetT, CreateT> : IBaseController<T, CreateT>
+    public interface IQueryController<T, Return, GetT, CreateT> : IBaseController<T, CreateT>
     where T : IBaseEntity
     where Return : BaseReturn
-    where GetT : IBaseGet
+    where GetT : IBaseGet<T>
     where CreateT : BaseCreate
     {
         /// <summary>
@@ -19,14 +19,14 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         Task<PageData<Return>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page);
         /// <summary>
         /// 带条件查询(不分页)
-        /// </summary>;
+        /// </summary>
         [HttpGet, Route("Query")]
         Task<ICollection<Return>> FindQueryAsync([FromQuery] GetT input);
     }
 
-    public interface ICrudController<T, GetT, CreateT> : IBaseController<T, CreateT>
+    public interface IQueryController<T, GetT, CreateT> : IBaseController<T, CreateT>
     where T : IBaseEntity
-    where GetT : IBaseGet
+    where GetT : IBaseGet<T>
     where CreateT : BaseCreate
     {
         /// <summary>

@@ -1,32 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using AspNet.Dev.Pkg.Infrastructure.Dto;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
-using AspNet.Dev.Pkg.Infrastructure.Unit;
 using AspNet.Dev.Pkg.Infrastructure.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
-using Microsoft.AspNetCore.Http;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Application
 {
-    public class BaseApplication<T, CreateT> : IBaseApplication<T, CreateT> where T : class, IBaseEntity where CreateT : BaseCreate
+    public class BaseApplication : IBaseApplication
     {
-        protected string AppKey = string.Empty;
-        protected IRepository<T> Repository;
         protected readonly ConnectionMultiplexer _conn;
         protected readonly IDatabase _cache;
         protected readonly IMapper _mapper;
         protected IdentityUser<Guid> CurrentUser = null;
-        public BaseApplication(IRepository<T> re)
+        public BaseApplication()
         {
-            Repository = re;
             var provider = ServiceGet.GetProvider();
             if (provider != null)
             {
@@ -36,36 +29,41 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
                     _cache = _conn.GetDatabase();
             }
         }
-
         public IdentityUser<Guid> GetCurrentUser()
         {
             return CurrentUser;
         }
-
-        public void SetCurrentUser(IdentityUser<Guid> user)
+    }
+    public class BaseApplication<T, Return, CreateT> : BaseApplication<T, CreateT>, IBaseApplication<T, Return, CreateT>
+    where T : class, IBaseEntity
+    where Return : BaseReturn
+    where CreateT : BaseCreate
+    {
+        public BaseApplication(IRepository<T> re) : base(re)
         {
-            if (CurrentUser == null)
-            {
-                CurrentUser = user;
-                Repository.SetCurrentUser(user);
-            }
         }
 
-        public virtual IQueryable<T> FindQuery(Expression<Func<T, bool>> exp)
+        public new async Task<Return> AddAsync(CreateT entity)
         {
-            var query = Repository.FindQuery(exp);
-            return query;
+            T model = _mapper.Map<T>(entity);
+            await Repository.AddAsync(model);
+            return _mapper.Map<Return>(model);
         }
 
-        public virtual async Task<ICollection<T>> FindAllAsync(Expression<Func<T, bool>> exp)
+        public new async Task<Return> FindAsync(Guid id)
         {
-            return await Repository.FindQuery(exp).ToListAsync();
+            return _mapper.Map<Return>(await Repository.FindByIDAsync(id));
+        }
+    }
+    public class BaseApplication<T, CreateT> : BaseApplication, IBaseApplication<T, CreateT> where T : class, IBaseEntity where CreateT : BaseCreate
+    {
+        protected string AppKey = string.Empty;
+        protected IRepository<T> Repository;
+        public BaseApplication(IRepository<T> re)
+        {
+            Repository = re;
         }
 
-        public virtual async Task<PageData<T>> FindPageAsync(PageRequest page)
-        {
-            return await Repository.FindPageAsync(FindQuery(null), page);
-        }
 
         public virtual async Task<int> SaveChangesAsync()
         {
@@ -79,7 +77,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         public virtual async Task<T> AddAsync(CreateT entity)
         {
             T model = _mapper.Map<T>(entity);
-            model.Init();
             await Repository.AddAsync(model);
             return model;
         }

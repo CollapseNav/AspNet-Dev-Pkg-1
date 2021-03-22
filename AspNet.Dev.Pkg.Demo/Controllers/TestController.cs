@@ -6,9 +6,9 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DemoAgainController : QueryController<DemoAgain, DemoAgainGet, DemoAgainCreate>
+    public class TestController : QueryController<Test, TestReturn, TestGet, TestCreate>
     {
-        public DemoAgainController(IQueryApplication<DemoAgain, DemoAgainGet, DemoAgainCreate> app) : base(app)
+        public TestController(IQueryApplication<Test, TestReturn, TestGet, TestCreate> app) : base(app)
         {
         }
     }

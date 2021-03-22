@@ -4,7 +4,6 @@ using StackExchange.Redis;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using AspNet.Dev.Pkg.Infrastructure.Application;
-using AspNet.Dev.Pkg.Infrastructure.Repository;
 using System;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Ext
@@ -29,7 +28,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Ext
         {
             services.AddScoped(typeof(IBaseApplication<,>), typeof(BaseApplication<,>));
             services.AddScoped(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
-            services.AddScoped(typeof(IQCrudApplication<,,>), typeof(QCrudApplication<,,>));
+            services.AddScoped(typeof(IQueryApplication<,,>), typeof(QueryApplication<,,>));
         }
 
         public static void ConfigureCoreRepository<T>(this IServiceCollection services)
