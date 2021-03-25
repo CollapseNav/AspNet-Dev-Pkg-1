@@ -12,11 +12,11 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
     public interface IRepository<T> where T : class, IBaseEntity
     {
         void SetCurrentUser(IdentityUser<Guid> user);
-        Task AddAsync(T entity);
-        Task AddRangeAsync(ICollection<T> entityList);
-        Task DeleteAsync(T entity, bool isTrue = false);
+        Task<T> AddAsync(T entity);
+        Task<int> AddRangeAsync(ICollection<T> entityList);
+        Task<bool> DeleteAsync(T entity, bool isTrue = false);
         Task<int> DeleteAsync(Expression<Func<T, bool>> exp, bool isTrue = false);
-        Task DeleteByIDAsync(Guid id, bool isTrue = false);
+        Task<bool> DeleteByIDAsync(Guid id, bool isTrue = false);
         Task<int> DeleteByIDsAsync(ICollection<Guid> id, bool isTrue = false);
         Task UpdateAsync(T entity);
         Task<int> UpdateAsync(Expression<Func<T, bool>> where, Expression<Func<T, T>> entity);

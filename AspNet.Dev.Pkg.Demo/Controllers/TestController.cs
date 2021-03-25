@@ -1,4 +1,6 @@
-﻿using AspNet.Dev.Pkg.Infrastructure.Controller;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AspNet.Dev.Pkg.Infrastructure.Controller;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,8 +10,7 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
     [Route("[controller]")]
     public class TestController : QueryController<Test, TestReturn, TestGet, TestCreate>
     {
-        public TestController(IQueryApplication<Test, TestReturn, TestGet, TestCreate> app) : base(app)
-        {
-        }
+        public TestController(IQueryApplication<Test, TestReturn, TestGet, TestCreate> app) : base(app) { }
+
     }
 }

@@ -7,6 +7,7 @@ namespace AspNet.Dev.Pkg.Demo
         public MappingProfile()
         {
             CreateMap<Demo, DemoCreate>().ReverseMap();
+            CreateMap<Demo, DemoReturn>().ReverseMap();
             CreateMap<DemoAgain, DemoAgainCreate>().ReverseMap();
             CreateMap<Test, TestCreate>().ReverseMap();
             CreateMap<Test, TestReturn>().ReverseMap();

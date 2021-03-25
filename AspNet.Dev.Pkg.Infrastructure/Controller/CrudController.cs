@@ -15,7 +15,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
     where GetT : IBaseGet
     where CreateT : BaseCreate
     {
-        private readonly ICrudApplication<T, Return, GetT, CreateT> _app;
+        protected readonly ICrudApplication<T, Return, GetT, CreateT> _app;
         public CrudController(ICrudApplication<T, Return, GetT, CreateT> app) : base(app)
         {
             _app = app;
@@ -44,7 +44,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
     where GetT : IBaseGet
     where CreateT : BaseCreate
     {
-        private readonly ICrudApplication<T, GetT, CreateT> _app;
+        protected readonly ICrudApplication<T, GetT, CreateT> _app;
         public CrudController(ICrudApplication<T, GetT, CreateT> app) : base(app)
         {
             _app = app;

@@ -10,7 +10,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
     {
     }
 
-    public interface IBaseController<T, CreateT> : IBaseController, IDisposable where T : IBaseEntity where CreateT : BaseCreate
+    public interface IBaseController<T, CreateT> : IBaseController, IDisposable where T : IBaseEntity where CreateT : IBaseCreate
     {
         /// <summary>
         /// 添加(单个)

@@ -11,35 +11,27 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
 {
     public class CrudApplication<T, Return, GetT, CreateT> : BaseApplication<T, Return, CreateT>, ICrudApplication<T, Return, GetT, CreateT>
     where T : class, IBaseEntity
-    where Return : BaseReturn
+    where Return : IBaseReturn
     where GetT : IBaseGet
-    where CreateT : BaseCreate
+    where CreateT : IBaseCreate
     {
         public CrudApplication(IRepository<T> re) : base(re) { }
 
         public async Task<PageData<Return>> FindPageAsync(GetT input, PageRequest page)
         {
             var result = await Repository.FindPageAsync(GetQuery(input), page);
-            return new PageData<Return>
-            {
-                Total = result.Total,
-                Data = _mapper.Map<ICollection<Return>>(result.Data)
-            };
+            return new PageData<Return> { Total = result.Total, Data = _mapper.Map<ICollection<Return>>(result.Data) };
         }
 
-        public async Task<ICollection<Return>> FindQueryAsync(GetT input)
-        {
-            return _mapper.Map<ICollection<Return>>(await Repository.FindQuery(GetQuery(input)).ToListAsync());
-        }
+        public async Task<ICollection<Return>> FindQueryAsync(GetT input) => _mapper.Map<ICollection<Return>>(await Repository.FindQuery(GetQuery(input)).ToListAsync());
 
-        public IQueryable<T> GetQuery(GetT input)
-        {
-            return Repository
-            .WhereIf(true, item => true)
-            ;
-        }
+        public IQueryable<T> GetQuery(GetT input) => Repository.WhereIf(true, item => true);
+
     }
-    public class CrudApplication<T, GetT, CreateT> : BaseApplication<T, CreateT>, ICrudApplication<T, GetT, CreateT> where T : class, IBaseEntity where GetT : IBaseGet where CreateT : BaseCreate
+    public class CrudApplication<T, GetT, CreateT> : BaseApplication<T, CreateT>, ICrudApplication<T, GetT, CreateT>
+    where T : class, IBaseEntity
+    where GetT : IBaseGet
+    where CreateT : IBaseCreate
     {
         public CrudApplication(IRepository<T> re) : base(re)
         { }
@@ -58,54 +50,13 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         {
             return await Repository.FindPageAsync(GetQuery(input), page);
         }
-    }
-    public class QueryApplication<T, GetT, CreateT> : BaseApplication<T, CreateT>, IQueryApplication<T, GetT, CreateT> where T : class, IBaseEntity where GetT : IBaseGet<T> where CreateT : BaseCreate
-    {
-        public QueryApplication(IRepository<T> re) : base(re)
-        { }
 
-        public virtual IQueryable<T> GetQuery(GetT input)
-        {
-            return input.GetExpression(Repository
-            .WhereIf(true, item => true)
-            );
-        }
-        public virtual async Task<ICollection<T>> FindQueryAsync(GetT input)
-        {
-            return await Repository.FindQuery(GetQuery(input)).ToListAsync();
-        }
-        public virtual async Task<PageData<T>> FindPageAsync(GetT input, PageRequest page)
-        {
-            return await Repository.FindPageAsync(GetQuery(input), page);
-        }
-    }
-    public class QueryApplication<T, Return, GetT, CreateT> : BaseApplication<T, Return, CreateT>, IQueryApplication<T, Return, GetT, CreateT>
-    where T : class, IBaseEntity
-    where Return : BaseReturn
-    where GetT : IBaseGet<T>
-    where CreateT : BaseCreate
-    {
-        public QueryApplication(IRepository<T> re) : base(re) { }
+        public virtual async Task<ICollection<Target>> FindQueryAsync<Target>(GetT input) => _mapper.Map<ICollection<Target>>(await FindQueryAsync(input));
 
-        public virtual IQueryable<T> GetQuery(GetT input)
+        public virtual async Task<PageData<Target>> FindPageAsync<Target>(GetT input, PageRequest page)
         {
-            return input.GetExpression(Repository
-            .WhereIf(true, item => true)
-            );
-        }
-        public async Task<PageData<Return>> FindPageAsync(GetT input, PageRequest page)
-        {
-            var result = await Repository.FindPageAsync(GetQuery(input), page);
-            return new PageData<Return>
-            {
-                Total = result.Total,
-                Data = _mapper.Map<ICollection<Return>>(result.Data)
-            };
-        }
-
-        public async Task<ICollection<Return>> FindQueryAsync(GetT input)
-        {
-            return _mapper.Map<ICollection<Return>>(await Repository.FindQuery(GetQuery(input)).ToListAsync());
+            var pageData = await FindPageAsync(input, page);
+            return new PageData<Target> { Total = pageData.Total, Data = _mapper.Map<ICollection<Target>>(pageData.Data) };
         }
     }
 }

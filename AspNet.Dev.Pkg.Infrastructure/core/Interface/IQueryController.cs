@@ -8,9 +8,9 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
 {
     public interface IQueryController<T, Return, GetT, CreateT> : IBaseController<T, CreateT>
     where T : IBaseEntity
-    where Return : BaseReturn
+    where Return : IBaseReturn
     where GetT : IBaseGet<T>
-    where CreateT : BaseCreate
+    where CreateT : IBaseCreate
     {
         /// <summary>
         /// 带条件分页
@@ -27,7 +27,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
     public interface IQueryController<T, GetT, CreateT> : IBaseController<T, CreateT>
     where T : IBaseEntity
     where GetT : IBaseGet<T>
-    where CreateT : BaseCreate
+    where CreateT : IBaseCreate
     {
         /// <summary>
         /// 带条件分页

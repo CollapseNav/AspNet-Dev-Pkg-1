@@ -34,21 +34,23 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// 添加数据(单个)
         /// </summary>
         /// <param name="entity">新的数据</param>
-        public virtual async Task AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             entity.Init(CurrentUser);
             await dbSet.AddAsync(entity);
+            return entity;
         }
 
         /// <summary>
         /// 添加数据(集合)
         /// </summary>
         /// <param name="entityList">新的数据集合</param>
-        public virtual async Task AddRangeAsync(ICollection<T> entityList)
+        public virtual async Task<int> AddRangeAsync(ICollection<T> entityList)
         {
             foreach (var entity in entityList)
                 entity.Init(CurrentUser);
             await dbSet.AddRangeAsync(entityList);
+            return entityList.Count;
         }
 
         /// <summary>
@@ -56,10 +58,11 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// </summary>
         /// <param name="entity">需要删除的数据</param>
         /// <param name="isTrue">是否真删</param>
-        public virtual async Task DeleteAsync(T entity, bool isTrue = false)
+        public virtual async Task<bool> DeleteAsync(T entity, bool isTrue = false)
         {
             entity.SoftDelete(CurrentUser);
             await UpdateAsync(entity);
+            return true;
         }
 
         /// <summary>
@@ -85,10 +88,11 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
         /// </summary>
         /// <param name="id">主键ID</param>
         /// <param name="isTrue">是否真删</param>
-        public virtual async Task DeleteByIDAsync(Guid id, bool isTrue = false)
+        public virtual async Task<bool> DeleteByIDAsync(Guid id, bool isTrue = false)
         {
             var entity = await FindByIDAsync(id);
             await DeleteAsync(entity);
+            return true;
         }
         /// <summary>
         /// 根据id删除数据
