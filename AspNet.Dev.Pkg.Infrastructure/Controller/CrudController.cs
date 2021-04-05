@@ -21,21 +21,13 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
             _app = app;
         }
         [HttpPost]
-        public virtual new async Task<Return> AddAsync(CreateT entity)
-        {
-            return await _app.AddAsync(entity);
-        }
+        public virtual new async Task<Return> AddAsync(CreateT entity) => await _app.AddAsync(entity);
+
         [HttpGet]
-        public async Task<PageData<Return>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page)
-        {
-            return await _app.FindPageAsync(input, page);
-        }
+        public async Task<PageData<Return>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page) => await _app.FindPageAsync(input, page);
 
         [HttpGet, Route("Query")]
-        public async Task<ICollection<Return>> FindQueryAsync([FromQuery] GetT input)
-        {
-            return await _app.FindQueryAsync(input);
-        }
+        public async Task<ICollection<Return>> FindQueryAsync([FromQuery] GetT input) => await _app.FindQueryAsync(input);
     }
     [Route("[controller]")]
     public class CrudController<T, GetT, CreateT> : BaseController<T, CreateT>,
@@ -45,25 +37,16 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
     where CreateT : BaseCreate
     {
         protected readonly ICrudApplication<T, GetT, CreateT> _app;
-        public CrudController(ICrudApplication<T, GetT, CreateT> app) : base(app)
-        {
-            _app = app;
-        }
+        public CrudController(ICrudApplication<T, GetT, CreateT> app) : base(app) => _app = app;
         /// <summary>
         /// 带条件分页
         /// </summary>
         [HttpGet]
-        public virtual async Task<PageData<T>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page)
-        {
-            return await _app.FindPageAsync(input, page);
-        }
+        public virtual async Task<PageData<T>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page) => await _app.FindPageAsync(input, page);
         /// <summary>
         /// 带条件查询(不分页)
         /// </summary>
         [HttpGet, Route("Query")]
-        public virtual async Task<ICollection<T>> FindQueryAsync([FromQuery] GetT input)
-        {
-            return await _app.FindQueryAsync(input);
-        }
+        public virtual async Task<ICollection<T>> FindQueryAsync([FromQuery] GetT input) => await _app.FindQueryAsync(input);
     }
 }

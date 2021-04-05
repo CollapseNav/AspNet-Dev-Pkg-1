@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AspNet.Dev.Pkg.Infrastructure.Controller;
+﻿using AspNet.Dev.Pkg.Infrastructure.Controller;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +8,6 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
     [Route("[controller]")]
     public class DemoAgainController : QueryController<DemoAgain, DemoAgainGet, DemoAgainCreate>
     {
-        public DemoAgainController(IQueryApplication<DemoAgain, DemoAgainGet, DemoAgainCreate> app) : base(app)
-        {
-        }
+        public DemoAgainController(IQueryApplication<DemoAgain, DemoAgainGet, DemoAgainCreate> app) : base(app) { }
     }
 }

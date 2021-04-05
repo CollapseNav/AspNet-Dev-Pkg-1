@@ -17,12 +17,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         public QueryApplication(IRepository<T> re) : base(re)
         { }
 
-        public new virtual IQueryable<T> GetQuery(GetT input)
-        {
-            return input.GetExpression(Repository
-            .WhereIf(true, item => true)
-            );
-        }
+        public new virtual IQueryable<T> GetQuery(GetT input) => input.GetExpression(Repository.WhereIf(true, item => true));
         // public virtual async Task<ICollection<T>> FindQueryAsync(GetT input)
         // {
         //     return await Repository.FindQuery(GetQuery(input)).ToListAsync();
@@ -42,15 +37,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
 
         public new virtual IQueryable<T> GetQuery(GetT input) => input.GetExpression(Repository.WhereIf(true, item => true));
 
-        public new async Task<PageData<Return>> FindPageAsync(GetT input, PageRequest page)
-        {
-            var result = await Repository.FindPageAsync(GetQuery(input), page);
-            return new PageData<Return>
-            {
-                Total = result.Total,
-                Data = _mapper.Map<ICollection<Return>>(result.Data)
-            };
-        }
+        public new async Task<PageData<Return>> FindPageAsync(GetT input, PageRequest page) => PageData<Return>.GenPageData<T>(await Repository.FindPageAsync(GetQuery(input), page));
 
         public new async Task<ICollection<Return>> FindQueryAsync(GetT input) => _mapper.Map<ICollection<Return>>(await Repository.FindQuery(GetQuery(input)).ToListAsync());
 
