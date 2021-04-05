@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AspNet.Dev.Pkg.Infrastructure\AspNet.Dev.Pkg.Infrastructure.csproj" />
     <None Include="Demo-blank.db" CopyToPublishDirectory="Always"/>
+    <None Include="TestExcel.xlsx" CopyToPublishDirectory="Always"/>
   </ItemGroup>
 
 </Project>

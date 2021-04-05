@@ -24,5 +24,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
     <PackageReference Include="Castle.Core" Version="4.4.1"/>
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.0"/>
+    <PackageReference Include="Open-XML-SDK" Version="2.9.1"/>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4"/>
   </ItemGroup>
 </Project>
