@@ -12,12 +12,16 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
         [HttpPost, Route("ExcelImport")]
         public ICollection<TestDto> ExcelImport(IFormFile file)
         {
-            var config = ExcelCellOption<TestDto>
-            .GenExcelOption("姓名", item => item.Name)
+            var config = new ExcelImportOption<TestDto>()
+            .Add("姓名", item => item.Name)
             .Add("年龄", item => item.Age, item => int.Parse(item))
-            .Add("性别", item => item.Gender, item => item == "男")
-            .Add("身高", item => item.Height, item => double.Parse(item));
-
+            .Default(item => item.Height, 233)
+            .AddInit(item =>
+            {
+                item.Name += "hhhhhhhh";
+                return item;
+            })
+            ;
             return ExcelOperation.ExcelToEntity(file.OpenReadStream(), config);
         }
     }
