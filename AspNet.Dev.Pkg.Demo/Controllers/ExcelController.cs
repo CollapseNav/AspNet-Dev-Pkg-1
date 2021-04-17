@@ -13,15 +13,17 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
         public ICollection<TestDto> ExcelImport(IFormFile file)
         {
             var config = new ExcelImportOption<TestDto>()
-            .Add("姓名", item => item.Name)
-            .Add("年龄", item => item.Age, item => int.Parse(item))
+            .Require("姓名", item => item.Name)
+            .Add("年龄", item => item.Age, ExcelToEntityType.Int32)
             .Default(item => item.Height, 233)
             .AddInit(item =>
             {
                 item.Name += "hhhhhhhh";
+                item.Gender = false;
                 return item;
             })
             ;
+            var header = ExcelOperation.GenExcelHeaderByOptions(file.OpenReadStream(), config);
             return ExcelOperation.ExcelToEntity(file.OpenReadStream(), config);
         }
     }
