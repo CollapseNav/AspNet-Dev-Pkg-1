@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using AspNet.Dev.Pkg.Infrastructure.Application;
 using System;
+using System.Collections.Generic;
+using AspNet.Dev.Pkg.Infrastructure.Repository;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Ext
 {
@@ -26,9 +28,12 @@ namespace AspNet.Dev.Pkg.Infrastructure.Ext
 
         public static void ConfigureCoreScope(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IBaseApplication<,>), typeof(BaseApplication<,>));
-            services.AddScoped(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
-            services.AddScoped(typeof(IQueryApplication<,,>), typeof(QueryApplication<,,>));
+            // services.AddScoped(typeof(IApplication<,>), typeof(Application<,>));
+            // services.AddScoped(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
+            // services.AddScoped(typeof(IQueryApplication<,,>), typeof(QueryApplication<,,>));
+            services.AddScoped(typeof(IReadonlyApplication<,>), typeof(ReadonlyApplication<,>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IReadonlyRepository<>), typeof(ReadonlyRepository<>));
         }
 
         public static void ConfigureCoreRepository<T>(this IServiceCollection services)

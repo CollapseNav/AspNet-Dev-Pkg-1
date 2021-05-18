@@ -7,7 +7,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Dto
     public class BaseGet : IBaseGet
     {
         public Guid? Id { get; set; }
-        public bool IsDeleted { get; set; } = false;
+        public bool? IsDeleted { get; set; } = false;
     }
     public class BaseGet<T> : BaseGet, IBaseGet<T> where T : IBaseEntity
     {

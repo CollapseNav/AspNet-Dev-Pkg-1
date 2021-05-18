@@ -5,6 +5,7 @@ using AspNet.Dev.Pkg.Infrastructure.Util;
 using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,6 +100,10 @@ namespace AspNet.Dev.Pkg.Demo
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
+
+
 
             app.UseEndpoints(endpoints =>
             {

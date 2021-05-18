@@ -14,7 +14,7 @@ namespace AspNet.Dev.Pkg.Demo.Controllers
         {
             var config = new ExcelImportOption<TestDto>()
             .Require("姓名", item => item.Name)
-            .Add("年龄", item => item.Age, ExcelToEntityType.Int32)
+            .Add("年龄", item => item.Age)
             .Default(item => item.Height, 233)
             .AddInit(item =>
             {

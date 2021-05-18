@@ -19,6 +19,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             ExcelHeader = GetExcelHeader(excelStream);
             ExcelData = GetExcelData(excelStream);
         }
+
         /// <summary>
         /// 获取表格header(仅限简单的单行表头)
         /// </summary>
@@ -43,9 +44,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             return data;
         }
 
-
-
-
         public static Dictionary<string, int> GenExcelHeaderByOptions<T>(Stream excelStream, ExcelImportOption<T> options)
         {
             using ExcelPackage pack = new(excelStream);
@@ -59,6 +57,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             .ToDictionary(item => item.Value?.ToString().Trim(), item => item.End.Column);
             return header;
         }
+
         /// <summary>
         /// 将表格数据转换为指定的数据实体(实际上下面的方法高度重合,主要为了Init)
         /// </summary>
@@ -292,7 +291,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             return origin;
         }
 
-        public static ExcelImportOption<T> Add<T, E>(this ExcelImportOption<T> origin, string field, Expression<Func<T, E>> prop, Func<string, object> action = null)
+        public static ExcelImportOption<T> Add<T, E>(this ExcelImportOption<T> origin, string field, Expression<Func<T, E>> prop, Func<string, object> action)
         {
             if (origin.FieldOption == null) origin.FieldOption = new List<ExcelCellOption<T>>();
             origin.FieldOption.Add(GenOption(field, prop, action));
@@ -304,14 +303,14 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             origin.FieldOption.Add(GenOption(field, prop, type));
             return origin;
         }
-        public static ICollection<ExcelCellOption<T>> Add<T, E>(this ICollection<ExcelCellOption<T>> origin, string field, Expression<Func<T, E>> prop, Func<string, object> action = null)
+        public static ICollection<ExcelCellOption<T>> Add<T, E>(this ICollection<ExcelCellOption<T>> origin, string field, Expression<Func<T, E>> prop, Func<string, object> action)
         {
             origin.Add(GenOption(field, prop, action));
             return origin;
         }
         public static ExcelImportOption<T> AddInit<T>(this ExcelImportOption<T> origin, Func<T, T> action = null)
         {
-            if (origin.Init == null) origin.Init = action;
+            origin.Init = action;
             return origin;
         }
     }

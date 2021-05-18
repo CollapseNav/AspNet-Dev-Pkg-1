@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Reflection;
 using System.Linq;
+using AspNet.Dev.Pkg.Infrastructure.Interface;
+using System.Linq.Expressions;
 
 namespace AspNet.Dev.Pkg.Demo
 {
@@ -18,6 +20,15 @@ namespace AspNet.Dev.Pkg.Demo
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            bool IsDeleted = true;
+            foreach (var entityType in builder.Model.GetEntityTypes().Where(e => typeof(IBaseEntity).IsAssignableFrom(e.ClrType)))
+            {
+                builder.Entity(entityType.ClrType).Property<bool>("IsDeleted");
+                var parameter = Expression.Parameter(entityType.ClrType, "entity");
+                var body = Expression.NotEqual(Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(bool) }, parameter, Expression.Constant("IsDeleted")), Expression.Constant(IsDeleted));
+
+                builder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            }
             builder.ConfigDataBase();
         }
     }
