@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
+using AspNet.Dev.Pkg.Infrastructure.Util;
 using Microsoft.AspNetCore.Identity;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Entity
@@ -27,23 +29,19 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
             Id = Guid.NewGuid();
             CreationTime = DateTime.Now;
             LastModificationTime = DateTime.Now;
+            InitModifyId();
         }
-        public virtual void Init(IdentityUser<Guid> user = null)
+
+        private void InitModifyId()
         {
-            if (user != null)
-                CreatorId = user.Id;
-            Init();
+            var curUser = CurrentUser.User;
+            LastModifierId = curUser?.Id;
         }
 
         public virtual void SoftDelete()
         {
             IsDeleted = true;
-        }
-        public virtual void SoftDelete(IdentityUser<Guid> user = null)
-        {
-            if (user != null)
-                LastModifierId = user.Id;
-            SoftDelete();
+            InitModifyId();
         }
 
         public virtual IBaseEntity Entity()
@@ -54,12 +52,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Entity
         public virtual void Update()
         {
             LastModificationTime = DateTime.Now;
-        }
-        public virtual void Update(IdentityUser<Guid> user = null)
-        {
-            if (user != null)
-                LastModifierId = user.Id;
-            Update();
+            InitModifyId();
         }
     }
 }

@@ -13,23 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Controller
 {
-    // [Route("[controller]")]
-    // public class BaseController : ControllerBase
-    // {
-    //     protected readonly DbContext _context;
-    //     protected IdentityUser<Guid> CurrentUser = null;
-    //     protected HttpContext _httpContext = null;
-    //     private readonly IMapper _mapper;
-    //     public BaseController()
-    //     {
-    //         var provider = ServiceGet.GetProvider();
-    //         _mapper = provider?.GetService<IMapper>();
-    //         IHttpContextAccessor httpContextAccessor = provider?.GetService<IHttpContextAccessor>();
-    //         _httpContext = httpContextAccessor?.HttpContext;
-    //         var user = _httpContext?.User;
-    //         var userInfo = user?.Claims.FirstOrDefault(item => item.Type.ToLower() == "userInfo".ToLower());
-    //     }
-    // }
     [Route("api/[controller]")]
     public class ModifyController<T, CreateT> : Controller, IModifyController<T, CreateT>
     where T : class, IBaseEntity

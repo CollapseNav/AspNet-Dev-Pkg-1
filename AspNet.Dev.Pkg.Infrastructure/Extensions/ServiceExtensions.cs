@@ -7,11 +7,18 @@ using AspNet.Dev.Pkg.Infrastructure.Application;
 using System;
 using System.Collections.Generic;
 using AspNet.Dev.Pkg.Infrastructure.Repository;
+using AspNet.Dev.Pkg.Infrastructure.Controller;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNet.Dev.Pkg.Infrastructure.Ext
 {
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// 注册 Redis
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="connStr"></param>
         public static void ConfigureCoreRedis(this IServiceCollection services, string connStr)
         {
             if (!string.IsNullOrEmpty(connStr))
@@ -21,30 +28,42 @@ namespace AspNet.Dev.Pkg.Infrastructure.Ext
             }
         }
 
+        /// <summary>
+        /// 注册 HttpContext
+        /// </summary>
+        /// <param name="services"></param>
         public static void ConfigureCoreHttpContext(this IServiceCollection services)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
-        public static void ConfigureCoreScope(this IServiceCollection services)
+        public static void AddDefaultDbContext(this IServiceCollection services, Type context)
         {
-            // services.AddScoped(typeof(IApplication<,>), typeof(Application<,>));
-            // services.AddScoped(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
-            // services.AddScoped(typeof(IQueryApplication<,,>), typeof(QueryApplication<,,>));
-            services.AddScoped(typeof(IReadonlyApplication<,>), typeof(ReadonlyApplication<,>));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IReadonlyRepository<>), typeof(ReadonlyRepository<>));
+            services.AddTransient(typeof(DbContext), context);
         }
 
-        public static void ConfigureCoreRepository<T>(this IServiceCollection services)
+        /// <summary>
+        /// 默认注册
+        /// </summary>
+        public static void AddDefaultScope(this IServiceCollection services, Type context = null)
         {
-            services.ConfigureCoreRepository(typeof(T));
-        }
+            if (context != null)
+                services.AddTransient(typeof(DbContext), context);
+            // 注册 仓储 Repository
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IReadonlyRepository<>), typeof(ReadonlyRepository<>));
+            services.AddTransient(typeof(IModifyRepository<>), typeof(ModifyRepository<>));
 
-        public static void ConfigureCoreRepository(this IServiceCollection services, Type repo)
-        {
-            // services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IRepository<>), repo);
+            // 注册 Application
+            services.AddTransient(typeof(IApplication), typeof(Application.Application));
+            services.AddTransient(typeof(IModifyApplication<,>), typeof(ModifyApplication<,>));
+            services.AddTransient(typeof(IReadonlyApplication<,>), typeof(ReadonlyApplication<,>));
+            services.AddTransient(typeof(ICrudApplication<,,>), typeof(CrudApplication<,,>));
+
+            // 注册 Controller
+            services.AddTransient(typeof(IReadOnlyController<,>), typeof(ReadOnlyController<,>));
+            services.AddTransient(typeof(IModifyController<,>), typeof(ModifyController<,>));
+            services.AddTransient(typeof(ICrudController<,,>), typeof(CrudController<,,>));
         }
     }
 }

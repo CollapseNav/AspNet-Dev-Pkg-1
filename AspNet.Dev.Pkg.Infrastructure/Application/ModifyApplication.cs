@@ -32,7 +32,6 @@ namespace AspNet.Dev.Pkg.Infrastructure.Application
         }
         public DbContext GetDbContext() => Repository.GetContext();
         public virtual async Task<Target> AddAsync<Target>(CreateT entity) => _mapper.Map<Target>(await AddAsync(entity));
-
     }
     public class ModifyApplication<T, CreateT, Return> : ModifyApplication<T, CreateT>, IModifyApplication<T, CreateT, Return>
     where T : class, IBaseEntity

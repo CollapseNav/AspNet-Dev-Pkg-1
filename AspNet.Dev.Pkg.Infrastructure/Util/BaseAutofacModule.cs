@@ -12,6 +12,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterAssemblyTypes(System.Reflection.Assembly.GetExecutingAssembly()).Where(t => t.Name.EndsWith("Application"));
+
             builder.RegisterGeneric(typeof(Repository<>))
             .As(typeof(IRepository<>)).InstancePerLifetimeScope().EnableInterfaceInterceptors();
             builder.RegisterGeneric(typeof(ReadonlyRepository<>))

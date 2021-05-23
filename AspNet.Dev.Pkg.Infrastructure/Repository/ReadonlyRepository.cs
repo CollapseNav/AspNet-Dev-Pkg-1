@@ -13,9 +13,7 @@ namespace AspNet.Dev.Pkg.Infrastructure.Repository
     public class ReadonlyRepository<T> : Repository<T>, IReadonlyRepository<T>, IRepository<T>, IRepository
     where T : class, IBaseEntity, new()
     {
-        public ReadonlyRepository(DbContext db) : base(db)
-        {
-        }
+        public ReadonlyRepository(DbContext db) : base(db) { }
 
         public virtual async Task<T> FindAsync(Guid id)
         {

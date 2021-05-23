@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AspectCore.DependencyInjection;
 using AspNet.Dev.Pkg.Infrastructure.Dto;
 using AspNet.Dev.Pkg.Infrastructure.Interface;
 using AspNet.Dev.Pkg.Infrastructure.Unit;
@@ -17,73 +16,70 @@ namespace AspNet.Dev.Pkg.Infrastructure.Controller
     where GetT : IBaseGet<T>
     where CreateT : BaseCreate
     {
-        protected readonly IModifyApplication<T, CreateT> Write;
-        protected readonly IReadonlyApplication<T, GetT> Read;
+        protected readonly ICrudApplication<T, GetT, CreateT> App;
         public CrudController()
         {
-            ServiceGet.GetProvider().Resolve<IModifyApplication<T, CreateT>>();
-            Write = ServiceGet.GetProvider()?.GetService<IModifyApplication<T, CreateT>>();
-            Read = ServiceGet.GetProvider()?.GetService<IReadonlyApplication<T, GetT>>();
+            App = ServiceGet.GetProvider()?.GetService<ICrudApplication<T, GetT, CreateT>>();
         }
 
-        protected async Task<int> SaveChangesAsync() => await Write.SaveChangesAsync();
+        protected async Task<int> SaveChangesAsync() => await App.SaveChangesAsync();
 
         /// <summary>
         /// 添加(单个)
         /// </summary>
         [HttpPost]
-        public virtual async Task<T> AddAsync(CreateT entity) => await Write.AddAsync(entity);
+        public virtual async Task<T> AddAsync(CreateT entity) => await App.AddAsync(entity);
 
         /// <summary>
         /// 删除(单个 id)
         /// </summary>
         [HttpDelete, Route("{id}")]
-        public virtual async Task DeleteAsync(Guid id) => await Write.DeleteAsync(id);
+        public virtual async Task DeleteAsync(Guid id) => await App.DeleteAsync(id);
 
         /// <summary>
         /// 删除(多个 id)
         /// </summary>
         [HttpDelete]
-        public virtual async Task<int> DeleteRangeAsync(ICollection<Guid> id) => await Write.DeleteRangeAsync(id);
+        public virtual async Task<int> DeleteRangeAsync(ICollection<Guid> id) => await App.DeleteRangeAsync(id);
 
         /// <summary>
         /// 更新
         /// </summary>
         [HttpPut, Route("{id}")]
-        public virtual async Task UpdateAsync(Guid id, CreateT entity) => await Write.UpdateAsync(id, entity);
+        public virtual async Task UpdateAsync(Guid id, CreateT entity) => await App.UpdateAsync(id, entity);
 
         /// <summary>
         /// 添加(多个)
         /// </summary>
         [HttpPost, Route("AddRange")]
-        public virtual async Task<int> AddRangeAsync(ICollection<CreateT> entitys) => await Write.AddRangeAsync(entitys);
+        public virtual async Task<int> AddRangeAsync(ICollection<CreateT> entitys) => await App.AddRangeAsync(entitys);
 
-        public void Dispose() => Write.SaveChanges();
+        public void Dispose() => App.SaveChanges();
         /// <summary>
         /// 查找(单个 id)
         /// </summary>
         [HttpGet, Route("{id}")]
-        public virtual async Task<T> FindAsync(Guid id) => await Read.FindAsync(id);
+        public virtual async Task<T> FindAsync(Guid id) => await App.FindAsync(id);
 
         /// <summary>
         /// 带条件分页
         /// </summary>
         [HttpGet]
-        public virtual async Task<PageData<T>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page) => await Read.FindPageAsync(input, page);
+        public virtual async Task<PageData<T>> FindPageAsync([FromQuery] GetT input, [FromQuery] PageRequest page) => await App.FindPageAsync(input, page);
         /// <summary>
         /// 带条件查询(不分页)
         /// </summary>
         [HttpGet, Route("Query")]
-        public virtual async Task<IReadOnlyCollection<T>> FindQueryAsync([FromQuery] GetT input) => await Read.FindQueryAsync(input);
+        public virtual async Task<IReadOnlyCollection<T>> FindQueryAsync([FromQuery] GetT input) => await App.FindQueryAsync(input);
         /// <summary>
         /// 根据Id查询
         /// </summary>
         [HttpGet, Route("ByIds")]
-        public virtual async Task<IReadOnlyCollection<T>> FindByIdsAsync([FromQuery] ICollection<Guid> ids) => await Read.FindByIdsAsync(ids);
+        public virtual async Task<IReadOnlyCollection<T>> FindByIdsAsync([FromQuery] ICollection<Guid> ids) => await App.FindByIdsAsync(ids);
         /// <summary>
         /// 根据Id查询
         /// </summary>
         [HttpPost, Route("ByIds")]
-        public virtual async Task<IReadOnlyCollection<T>> FindByIdsPostAsync(ICollection<Guid> ids) => await Read.FindByIdsAsync(ids);
+        public virtual async Task<IReadOnlyCollection<T>> FindByIdsPostAsync(ICollection<Guid> ids) => await App.FindByIdsAsync(ids);
     }
 }

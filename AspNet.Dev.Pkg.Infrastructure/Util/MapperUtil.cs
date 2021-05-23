@@ -16,6 +16,14 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
             return mapper.Map<ICollection<T>>(objs);
         }
 
+        public static IReadOnlyCollection<T> ReadOnlyMaps<T>(this object objs)
+        {
+            var mapper = ServiceGet.GetProvider()?.GetService<IMapper>();
+            if (mapper == null)
+                throw new Exception("无法获取IMapper实例");
+            return mapper.Map<IReadOnlyCollection<T>>(objs);
+        }
+
         public static T Map<T>(this object obj)
         {
             var mapper = ServiceGet.GetProvider()?.GetService<IMapper>();

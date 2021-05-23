@@ -24,11 +24,11 @@ namespace AspNet.Dev.Pkg.Demo
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterType(typeof(DemoDbContext)).As(typeof(DbContext));
-            builder.RegisterModule(new BaseAutofacModule());
-        }
+        // public void ConfigureContainer(ContainerBuilder builder)
+        // {
+        //     builder.RegisterType(typeof(DemoDbContext)).As(typeof(DbContext));
+        //     builder.RegisterModule(new BaseAutofacModule());
+        // }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -65,6 +65,7 @@ namespace AspNet.Dev.Pkg.Demo
             });
             services.AddAutoMapper(typeof(MappingProfile));
             services.ConfigureCoreHttpContext();
+            services.AddDefaultScope(typeof(DemoDbContext));
 
             var authUrl = Configuration.GetSection("AuthUrl").Get<string>();
             if (!string.IsNullOrEmpty(authUrl))
@@ -95,15 +96,12 @@ namespace AspNet.Dev.Pkg.Demo
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNet.Dev.Pkg.Demo v1"));
 
-            // app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
-
-
+            CurrentUser.Init(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
 
             app.UseEndpoints(endpoints =>
             {

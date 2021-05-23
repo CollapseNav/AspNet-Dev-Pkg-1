@@ -19,11 +19,8 @@ namespace AspNet.Dev.Pkg.Infrastructure.Interface
         DateTime? CreationTime { get; set; }
         DateTime? LastModificationTime { get; set; }
         void Init();
-        void Init(IdentityUser<Guid> user = null);
         void SoftDelete();
-        void SoftDelete(IdentityUser<Guid> user = null);
         void Update();
-        void Update(IdentityUser<Guid> user = null);
         IBaseEntity Entity();
     }
 }

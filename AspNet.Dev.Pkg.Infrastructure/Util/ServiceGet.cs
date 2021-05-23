@@ -14,6 +14,5 @@ namespace AspNet.Dev.Pkg.Infrastructure.Util
         {
             return Provider;
         }
-
     }
 }
